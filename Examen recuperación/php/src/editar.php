@@ -3,12 +3,14 @@ include 'funciones.php';
 
 $config = include 'config.php';
 
+$timestamps = false;
+
 $resultado = [
   'error' => false,
   'mensaje' => ''
 ];
 
-if (!isset($_GET['cod_user'])) {
+if (!isset($_GET['id'])) {
   $resultado['error'] = true;
   $resultado['mensaje'] = 'El usuario no existe';
 }
@@ -19,20 +21,21 @@ if (isset($_POST['submit'])) {
     $conexion = new PDO($dsn, $config['db']['user'], $config['db']['pass'], $config['db']['options']);
 
     $usuario = [
-      "cod_user"   => $_POST['cod_user'],
+      "id"        => $_GET['id'],
       "nombre"   => $_POST['nombre'],
       "apellido" => $_POST['apellido'],
       "puesto"    => $_POST['puesto'],
       "cod_identificacion"     => $_POST['cod_identificacion']
     ];
+
+   
     
     $consultaSQL = "UPDATE tb_user SET
         nombre = :nombre,
         apellido = :apellido,
         puesto = :puesto,
-        cod_identificacion = :cod_identificacion,
-        updated_at = NOW()
-        WHERE cod_user = :cod_user";
+        cod_identificacion = :cod_identificacion
+        WHERE cod_user = :id";
     
     $consulta = $conexion->prepare($consultaSQL);
     $consulta->execute($usuario);
@@ -127,7 +130,7 @@ if (isset($usuario) && $usuario) {
             <input type="text" name="cod_identificacion" id="cod_identificacion" value="<?= escapar($usuario['cod_identificacion']) ?>" class="form-control">
           </div>
           <div class="form-group">
-            <input type="submit" name="submit" class="btn btn-primary" value="Actualizar">
+            <input type="submit" name="submit" class="btn btn-primary"  value="Actualizar">
             <a class="btn btn-primary" href="index.php">Regresar al inicio</a>
           </div>
         </form>
